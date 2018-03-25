@@ -4,7 +4,6 @@ RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder
 ENV HOME /home/builder
 WORKDIR ${HOME}
-ENV SHIBBOLETH_VERSION "2.6.0-2.2"
 RUN yum -y update \
     && yum -y groupinstall "Base" "Development Tools" \
     && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man
