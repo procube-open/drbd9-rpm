@@ -6,7 +6,7 @@ script:
   - docker build -t procube/drbd9-rpm .
   - mkdir -p /tmp/RPMS/{x86_64,noarch}
   - sudo chown 111:111 -R /tmp/RPMS
-  - docker run -it --rm --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/drbd9-rpm
+  - docker run -it --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/drbd9-rpm
   - (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/drbd9-rpm.tar.gz
 deploy:
   provider: releases
