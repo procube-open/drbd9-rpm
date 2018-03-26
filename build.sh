@@ -1,12 +1,10 @@
 #!/bin/bash
 set -x
-if [ "$1" = base ];then
 # build drbd-9 package
 cd ~/Archive/drbd-9.0
 git checkout drbd-9.0.12
 make .filelist
 make kmp-rpm
-elif [ "$1" = utils ]; then
 # build drbd-utils package
 cd ~/Archive/drbd-utils
 git checkout v9.3.0
@@ -28,10 +26,8 @@ __EOF
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --without-83support --without-84support
 make .filelist
 make rpm
-elif [ "$1" = manage ]; then
 # build drbdmanage package
 cd ~/Archive/drbdmanage
 git checkout v0.99.16
 make rpm
 cp dist/*.rpm ~/rpmbuild/RPMS/noarch
-fi
