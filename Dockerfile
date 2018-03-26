@@ -1,4 +1,4 @@
-FROM centos:7
+FROM procube/cento7-standalone-base:latest
 MAINTAINER "Mitsuru Nakakawaji" <mitsuru@procube.jp>
 RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder

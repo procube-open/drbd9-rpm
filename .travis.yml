@@ -2,9 +2,6 @@ sudo: required
 services:
   - docker
 install: true
-before_install:
-    - sudo apt-get update
-    - sudo apt-get -y -q -o Dpkg::Options::="--force-confnew" install docker-engine
 script:
   - docker build -t procube/drbd9-rpm .
   - mkdir -p /tmp/RPMS/{x86_64,noarch}
