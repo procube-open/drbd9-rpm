@@ -66,4 +66,11 @@ rpmbuild -bb --without 83support --without 84support drbd.spec
 cd ~/Archive/drbdmanage
 git checkout v0.99.16
 make rpm
-cp dist/*.rpm ~/rpmbuild/RPMS/noarch
+cp dist/*.noarch.rpm ~/rpmbuild/RPMS/noarch
+
+# build drbdmanage-docker-volume
+cd ~/Archive/drbdmanage-docker-volume
+make doc
+make rpm
+cp dist/*.noarch.rpm ~/rpmbuild/RPMS/noarch
+

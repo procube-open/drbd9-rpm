@@ -6,8 +6,8 @@ ENV HOME /home/builder
 WORKDIR ${HOME}
 RUN yum -y update \
     && yum -y groupinstall "Base" "Development Tools" \
-    && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man
-RUN yum -y install kernel-devel kernel-abi-whitelists
+    && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release
+RUN yum -y install kernel-devel kernel-abi-whitelists pandoc
 RUN mv /usr/bin/uname /usr/bin/uname.org
 COPY uname /usr/bin/uname
 RUN chmod +x /usr/bin/uname
@@ -17,6 +17,7 @@ RUN mkdir ${HOME}/Archive \
     && cd Archive \
     && git clone --recursive https://github.com/LINBIT/drbd-9.0.git \
     && git clone --recursive https://github.com/LINBIT/drbd-utils.git \
+    && git clone --recursive https://github.com/LINBIT/drbdmanage-docker-volume.git \
     && git clone --recursive https://github.com/LINBIT/drbdmanage.git
 COPY build.sh .
 CMD ["/bin/bash","./build.sh"]
