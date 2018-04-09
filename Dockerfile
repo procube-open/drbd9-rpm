@@ -20,4 +20,6 @@ RUN mkdir ${HOME}/Archive \
     && git clone --recursive https://github.com/LINBIT/drbdmanage-docker-volume.git \
     && git clone --recursive https://github.com/LINBIT/drbdmanage.git
 COPY build.sh .
+ADD docbook-xsl-1.79.1.tar.gz .
+ENV STYLESHEET_PREFIX file:///home/builder/docbook-xsl-1.79.1
 CMD ["/bin/bash","./build.sh"]

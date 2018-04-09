@@ -2,7 +2,7 @@
 set -x
 # build drbd-9 package
 cd ~/Archive/drbd-9.0
-git checkout drbd-9.0.12
+git checkout drbd-9.0.13-0rc1
 make .filelist
 make kmp-rpm
 # build drbd-utils package
@@ -58,9 +58,10 @@ __EOF
 ./autogen.sh
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc
 make .filelist
-make rpmprep
+make rpm
+#make rpmprep
 #rpmbuild -bb --without 83support --without 84support --without manual drbd.spec
-rpmbuild -bb --without 83support --without 84support drbd.spec
+# rpmbuild -bb --without 83support --without 84support drbd.spec
 
 # build drbdmanage package
 cd ~/Archive/drbdmanage
