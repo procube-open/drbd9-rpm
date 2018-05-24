@@ -2,12 +2,10 @@
 set -x
 # build drbd-9 package
 cd ~/Archive/drbd-9.0
-git checkout drbd-9.0.13-0rc1
 make .filelist
 make kmp-rpm
 # build drbd-utils package
 cd ~/Archive/drbd-utils
-git checkout v9.3.0
 patch -R -p 1 << '__EOF'
 --- new/Makefile.in	2018-03-27 02:50:49.237740424 +0900
 +++ old/Makefile.in	2018-03-26 21:58:45.000000000 +0900
@@ -65,7 +63,6 @@ make rpm
 
 # build drbdmanage package
 cd ~/Archive/drbdmanage
-git checkout v0.99.16
 make rpm
 cp dist/*.noarch.rpm ~/rpmbuild/RPMS/noarch
 
