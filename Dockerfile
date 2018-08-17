@@ -15,8 +15,8 @@ USER builder
 RUN rpmdev-setuptree
 RUN mkdir ${HOME}/Archive \
     && cd Archive \
-    && git clone --recursive -b drbd-9.0.14 https://github.com/LINBIT/drbd-9.0.git \
-    && git clone --recursive -b v9.4.0 https://github.com/LINBIT/drbd-utils.git \
+    && git clone --recursive -b drbd-9.0.15 https://github.com/LINBIT/drbd-9.0.git \
+    && git clone --recursive -b v9.5.0 https://github.com/LINBIT/drbd-utils.git \
     && git clone --recursive -b v0.7.1 https://github.com/LINBIT/drbdmanage-docker-volume.git \
     && git clone --recursive -b v0.99.17 https://github.com/LINBIT/drbdmanage.git
 COPY build.sh .
