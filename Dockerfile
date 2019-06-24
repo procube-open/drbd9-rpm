@@ -6,7 +6,7 @@ ENV HOME /home/builder
 WORKDIR ${HOME}
 RUN yum -y update \
     && yum -y groupinstall "Base" "Development Tools" \
-    && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release
+    && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release po4a
 RUN yum -y install kernel-devel kernel-abi-whitelists pandoc
 RUN mv /usr/bin/uname /usr/bin/uname.org
 COPY uname /usr/bin/uname
@@ -15,10 +15,8 @@ USER builder
 RUN rpmdev-setuptree
 RUN mkdir ${HOME}/Archive \
     && cd Archive \
-    && git clone --recursive -b drbd-9.0.15 https://github.com/LINBIT/drbd-9.0.git \
-    && git clone --recursive -b v9.5.0 https://github.com/LINBIT/drbd-utils.git \
-    && git clone --recursive -b v0.7.1 https://github.com/LINBIT/drbdmanage-docker-volume.git \
-    && git clone --recursive -b v0.99.17 https://github.com/LINBIT/drbdmanage.git
+    && git clone --recursive -b drbd-9.0.18-1 https://github.com/LINBIT/drbd-9.0.git \
+    && git clone --recursive -b v9.10.0 https://github.com/LINBIT/drbd-utils.git
 COPY build.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
 ENV STYLESHEET_PREFIX file:///home/builder/docbook-xsl-1.79.1
