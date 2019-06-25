@@ -27,6 +27,20 @@ patch -u Makefile.in << '__EOF'
  	@echo "You have now:" ; find `rpm -E "%_srcrpmdir"` -name *.src.rpm
  endif
 __EOF
+patch -p 0 << '__EOF'
+--- ../drbd-utils.orig/drbd.spec.in     2017-09-01 15:01:35.721074085 +0900
++++ ./drbd.spec.in      2017-09-04 10:48:54.719119053 +0900
+@@ -31,6 +31,7 @@
+ # conditionals may not contain "-" nor "_", hence "bashcompletion"
+ %bcond_without bashcompletion
+ %bcond_without sbinsymlinks
++%undefine with_sbinsymlinks
+ # --with xen is ignored on any non-x86 architecture
+ %bcond_without xen
+ %bcond_without 83support
+rpmbuild -bb rpmbuild/SPECS/shibboleth.spec -with fastcgi
+cp /tmp/rpms/* rpmbuild/RPMS/x86_64
+__EOF
 ./autogen.sh
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc
 make .filelist
