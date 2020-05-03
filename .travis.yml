@@ -17,7 +17,9 @@ deploy:
   provider: releases
   api_key:
     secure: "kTx3sy45l5lL/F8atAIIT6QfMxOTo5HFyMQ0Pv16JL2gsWzmrbKIYeACCrFmZQ+7VqbVYoaVj3tu2eCL7ouMGEXFe02h7rVG739V4vZNUUyZ+whvIkbpnwjUbaYh0JzO4bCUmOrJBBVN8j8x8PT4lz5NFUwkMrsmKpxiGBGgeYqq0D8S3MVWjGJcD7rhf6RJpvoJ1Zuy2nQqnuGxlJXRBdZzIRzTJZ+j+RVXcSzjlg0e6dI8+63o4oFTlv0W+HIADmnmfKOZ3Bmzed1Tsa7ftgfBTle7uGA4CdXEkoVJCfsAyKeTEugQ2Y6cIZGSXnInAkAYU6ZIN9pvsccGDJgyUNIgAEU+MjPOAUev5eB6lygfJ627OYuYH+IjJfYngOBJhFO+lFjMTiMC8dy3LDw59eSjUItTduXzYdLVHOTpYHUfEET3lYqIWEhBy9kxEmLOsYMv1wV/Bj6XlhZe3pLLPvfl+JKvnOLcAO6+6BwdVa8qD+W5dskEyAZ/huIvo4D5lwkS+dqXFJSDXhwvwKzJy3tMeefiM7hd2JdObto0JZQ9HgLuL6vdMgMsReOLWFUzmbyeoGO79hK9gxzGghrH7q1de72uijhrTsq4XA21fxNnMoxXhU861ehl4gDF7X9uHChfhFMpq8UJ91tGhHW2eGMaoanEcs/7L8jkYANE6Oo="
-  file: drbd9-rpm.tar.gz
+  file:
+    - drbd9-rpm.tar.gz
+    - drbd9-rpm-amzn2.tar.gz
   overwrite: true
   skip_cleanup: true
   on:
