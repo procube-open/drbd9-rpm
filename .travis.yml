@@ -8,6 +8,11 @@ script:
   - sudo chown 111:111 -R /tmp/RPMS
   - docker run -it --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/drbd9-rpm
   - (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/drbd9-rpm.tar.gz
+  - docker build -t procube/drbd9-rpm-amzn2 -f Dockerfile.amzn2 .
+  - mkdir -p /tmp/RPMS.amzn2/{x86_64,noarch}
+  - sudo chown 111:111 -R /tmp/RPMS.amzn2
+  - docker run -it --rm --privileged --name drbd9-rpm -v /tmp/RPMS.amzn2:/home/builder/rpmbuild/RPMS.amzn2 procube/drbd9-rpm-amzn2
+  - (cd /tmp;tar -czf - RPMS.amzn2) > $TRAVIS_BUILD_DIR/drbd9-rpm-amzn2.tar.gz
 deploy:
   provider: releases
   api_key:
