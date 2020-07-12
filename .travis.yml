@@ -25,6 +25,7 @@ deploy:
   file:
     - drbd9-rpm.tar.gz
     - drbd9-rpm-amzn2.tar.gz
+    - drbd9-rpm-foros8.tar.gz
   overwrite: true
   skip_cleanup: true
   on:
