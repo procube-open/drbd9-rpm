@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos:8
 MAINTAINER "Mitsuru Nakakawaji" <mitsuru@procube.jp>
 RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder
@@ -6,8 +6,8 @@ ENV HOME /home/builder
 WORKDIR ${HOME}
 RUN yum -y update \
     && yum -y groupinstall "Base" "Development Tools" \
-    && yum -y install rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release po4a
-RUN yum -y install kernel-devel kernel-abi-whitelists pandoc
+    && yum -y install --enablerepo PowerTools rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release po4a
+RUN yum -y install --enablerepo PowerTools kernel-rpm-macros elfutils-libelf-devel kernel-devel kernel-abi-whitelists pandoc
 RUN mv /usr/bin/uname /usr/bin/uname.org
 COPY uname /usr/bin/uname
 RUN chmod +x /usr/bin/uname
