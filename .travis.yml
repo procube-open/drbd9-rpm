@@ -16,7 +16,7 @@ script:
   - docker build -t procube/drbd9-rpm-foros8 -f Dockerfile.foros8 .
   - mkdir -p /tmp/RPMS.foros8/{x86_64,noarch}
   - sudo chown 111:111 -R /tmp/RPMS.foros8
-  - docker run -it --rm --privileged --name drbd9-rpm -v /tmp/RPMS.foros8:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-foros8
+  - travis_wait docker run -it --rm --privileged --name drbd9-rpm -v /tmp/RPMS.foros8:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-foros8
   - (cd /tmp;tar -czf - RPMS.foros8) > $TRAVIS_BUILD_DIR/drbd9-rpm-foros8.tar.gz
 deploy:
   provider: releases
