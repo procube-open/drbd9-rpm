@@ -15,8 +15,8 @@ USER builder
 RUN rpmdev-setuptree
 RUN mkdir ${HOME}/Archive \
     && cd Archive \
-    && git clone --recursive -b drbd-9.0.28-1 https://github.com/LINBIT/drbd-9.0.git \
-    && git clone --recursive -b v9.16.0 https://github.com/LINBIT/drbd-utils.git
+    && git clone --recursive -b drbd-9.1.2 https://github.com/LINBIT/drbd-9.0.git \
+    && git clone --recursive -b v9.18.0 https://github.com/LINBIT/drbd-utils.git
 COPY build.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
 ENV STYLESHEET_PREFIX file:///home/builder/docbook-xsl-1.79.1
