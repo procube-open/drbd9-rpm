@@ -1,0 +1,31 @@
+name: CI
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    tags: [ 1* 2* 3* 4* 5* 6* 7* 8* 9* ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          docker build -t procube/drbd9-rpm .
+          mkdir -p /tmp/RPMS/{x86_64,noarch}
+          sudo chown 111:111 -R /tmp/RPMS
+          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/drbd9-rpm
+          (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/drbd9-rpm.tar.gz
+          docker build -t procube/drbd9-rpm-amzn2 -f Dockerfile.amzn2 .
+          mkdir -p /tmp/RPMS.amzn2/{x86_64,noarch}
+          sudo chown 111:111 -R /tmp/RPMS.amzn2
+          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS.amzn2:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-amzn2
+          (cd /tmp;tar -czf - RPMS.amzn2) > $TRAVIS_BUILD_DIR/drbd9-rpm-amzn2.tar.gz
+          docker build -t procube/drbd9-rpm-foros8 -f Dockerfile.foros8 .
+          mkdir -p /tmp/RPMS.foros8/{x86_64,noarch}
+          sudo chown 111:111 -R /tmp/RPMS.foros8
+          travis_wait docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS.foros8:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-foros8
+          (cd /tmp;tar -czf - RPMS.foros8) > $TRAVIS_BUILD_DIR/drbd9-rpm-foros8.tar.gz
