@@ -1,32 +1,39 @@
 name: CI
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     tags: [ '*' ]
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ '**' ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+       include:
+         - target: drbd9-rpm
+           dockerfile: Dockerfile
+         - target: drbd9-rpm-amzn2
+           dockerfile: Dockerfile.amzn2
+         - target: drbd9-rpm-foros8
+           dockerfile: Dockerfile.foros8
     steps:
       - uses: actions/checkout@v2
-      - name: build
+      - name: Build
+        env:
+          TRAVIS_BUILD_DIR: ${{ github.workspace }}
+          TARGET: ${{ matrix.target }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
         run: |
-          docker build -t procube/drbd9-rpm .
+          docker build -t procube/$TARGET -f $DOCKERFILE .
           mkdir -p /tmp/RPMS/{x86_64,noarch}
           sudo chown 111:111 -R /tmp/RPMS
-          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/drbd9-rpm
-          (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/drbd9-rpm.tar.gz
-          docker build -t procube/drbd9-rpm-amzn2 -f Dockerfile.amzn2 .
-          mkdir -p /tmp/RPMS.amzn2/{x86_64,noarch}
-          sudo chown 111:111 -R /tmp/RPMS.amzn2
-          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS.amzn2:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-amzn2
-          (cd /tmp;tar -czf - RPMS.amzn2) > $TRAVIS_BUILD_DIR/drbd9-rpm-amzn2.tar.gz
-          docker build -t procube/drbd9-rpm-foros8 -f Dockerfile.foros8 .
-          mkdir -p /tmp/RPMS.foros8/{x86_64,noarch}
-          sudo chown 111:111 -R /tmp/RPMS.foros8
-          travis_wait docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS.foros8:/home/builder/rpmbuild/RPMS procube/drbd9-rpm-foros8
-          (cd /tmp;tar -czf - RPMS.foros8) > $TRAVIS_BUILD_DIR/drbd9-rpm-foros8.tar.gz
+          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/$TARGET
+          (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/$TARGET.tar.gz
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ matrix.target }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
