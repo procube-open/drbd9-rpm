@@ -4,6 +4,11 @@ RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder
 ENV HOME /home/builder
 WORKDIR ${HOME}
+# update to CentOS Stream 8
+RUN dnf -y install centos-release-stream &&\
+    dnf -y swap centos-{linux,stream}-repos &&\
+    dnf -y distro-sync &&\
+    dnf clean all
 RUN yum -y update \
     && yum -y groupinstall "Base" "Development Tools" \
     && yum -y install --enablerepo powertools rpmdevtools libxslt libxslt-devel pygobject2 help2man epel-release po4a
