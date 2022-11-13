@@ -37,14 +37,15 @@ jobs:
           DRBD_TAG: ${{ matrix.drbd_tag }}
           UTIL_TAG: ${{ matrix.util_tag }}
         run: |
+          mkdir $BUILD_DIR/build
           docker build -t builder -f $DOCKERFILE . --build-arg DRBD_TAG=$DRBD_TAG --build-arg UTIL_TAG=$UTIL_TAG --build-arg IMAGE_TAG=$IMAGE_TAG
           docker run --rm --privileged -v RPMS:/home/builder/rpmbuild/RPMS builder
-          docker run --rm -v RPMS:/home/builder/rpmbuild/RPMS builder tar -cz -C /home/builder/rpmbuild RPMS > $BUILD_DIR/$(docker run --rm builder /bin/bash version.sh).tar.gz
+          docker run --rm -v RPMS:/home/builder/rpmbuild/RPMS builder tar -cz -C /home/builder/rpmbuild RPMS > $BUILD_DIR/build/$(docker run --rm builder /bin/bash version.sh).tar.gz
           docker volume rm RPMS
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           name: Latests
-          files: '*.tar.gz'
+          files: 'build/*.tar.gz'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
