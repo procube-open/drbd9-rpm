@@ -1,16 +1,16 @@
-ARG IMAGE_TAG=8.7
+ARG IMAGE_TAG=9.0-minimal
 FROM almalinux:${IMAGE_TAG}
 RUN dnf -y update \
     && dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y install epel-release \
-    && dnf config-manager --disable epel epel-modular
+    && dnf config-manager --disable epel
 RUN dnf -y groupinstall "Base" "Development Tools" \
-    && dnf -y install --enablerepo powertools rpmdevtools libxslt libxslt-devel pygobject2 help2man po4a selinux-policy-devel
-RUN dnf -y install --enablerepo powertools kernel-rpm-macros elfutils-libelf-devel kernel-devel kernel-abi-whitelists pandoc
-# spatch released from eple not recent enough, need spatch version >= 1.0.8
+    && dnf -y install --enablerepo crb rpmdevtools libxslt libxslt-devel help2man po4a selinux-policy-devel
+RUN dnf -y install --enablerepo epel kernel-rpm-macros elfutils-libelf-devel kernel-devel pandoc kernel-abi-stablelists
+# spatch can not find in epel
 # RUN dnf -y install --enablerepo=powertools,epel coccinelle
 # build spatch from source code
-RUN dnf -y install --enablerepo powertools pkgconfig chrpath ocaml ocaml-findlib ocaml-findlib-devel ocaml-ocamldoc
+RUN dnf -y install --enablerepo crb pkgconfig chrpath ocaml ocaml-findlib ocaml-findlib-devel ocaml-ocamldoc
 RUN dnf -y install --enablerepo epel asciidoctor
 WORKDIR /root
 RUN curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.1.1.tar.gz && tar xvzf 1.1.1.tar.gz

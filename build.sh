@@ -2,51 +2,47 @@
 set -x
 # build drbd-9 package
 cd ~/Archive/drbd-9.0
-make .filelist
+make tarball
 make kmp-rpm
 # build drbd-utils package
 cd ~/Archive/drbd-utils
-patch -u Makefile.in << '__EOF'
---- Makefile.in	2019-06-24 13:28:31.651645721 +0000
-+++ Makefile.in.new	2019-06-24 13:29:20.523507004 +0000
-@@ -300,14 +300,14 @@
- .PHONY: rpm
- rpm: rpmprep
- 	$(RPMBUILD) -bb \
--	    --with prebuiltman $(RPMOPT) \
-+	    $(RPMOPT) \
- 	    drbd.spec
- 	@echo "You have now:" ; find `rpm -E "%_rpmdir"` -name *.rpm
+# patch -p 0 << '__EOF'
+# --- drbd.spec.in	2022-11-10 11:08:26.166466000 +0000
+# +++ drbd.spec.in.new	2022-11-10 11:21:15.661703000 +0000
+# @@ -460,9 +460,11 @@
+#  %endif # with manual
+ 
+#  %prep
+# -%setup -q -n drbd-utils-%{upstream_version}
+# -
+# +#%setup -q -n drbd-utils-%{upstream_version}
+# +git clone --recursive -b v${VERSION} https://github.com/LINBIT/drbd-utils.git drbd-utils-${VERSION}
+# +cd drbd-utils-${VERSION}
+#  %build
+# +cd drbd-utils-${VERSION}
+#  # rebuild configure...
+#  aclocal
+#  autoheader
+# @@ -488,6 +490,7 @@
+#  %endif
+ 
+#  %install
+# +cd drbd-utils-${VERSION}
+#  rm -rf %{buildroot}
+#  make install DESTDIR=%{buildroot} CREATE_MAN_LINK=no
 
- .PHONY: srpm
- srpm: rpmprep
- 	$(RPMBUILD) -bs \
--		--with prebuiltman $(RPMOPT) \
-+		$(RPMOPT) \
- 		drbd.spec
- 	@echo "You have now:" ; find `rpm -E "%_srcrpmdir"` -name *.src.rpm
- endif
-__EOF
-patch -p 0 << '__EOF'
---- ../drbd-utils.orig/drbd.spec.in     2017-09-01 15:01:35.721074085 +0900
-+++ ./drbd.spec.in      2017-09-04 10:48:54.719119053 +0900
-@@ -31,6 +31,7 @@
- # conditionals may not contain "-" nor "_", hence "bashcompletion"
- %bcond_without bashcompletion
- %bcond_without sbinsymlinks
-+%undefine with_sbinsymlinks
- # --with xen is ignored on any non-x86 architecture
- %bcond_without xen
- %bcond_without 83support
-rpmbuild -bb rpmbuild/SPECS/shibboleth.spec -with fastcgi
-cp /tmp/rpms/* rpmbuild/RPMS/x86_64
-__EOF
+# __EOF
 ./autogen.sh
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc
-make .filelist
-make rpm
-#make rpmprep
-#rpmbuild -bb --without 83support --without 84support --without manual drbd.spec
-# rpmbuild -bb --without 83support --without 84support drbd.spec
+UTIL_VERSION=$(sed -n -e "s/^PACKAGE_VERSION='\(.*\)'/\1/p" configure)
+make tarball VERSION=${UTIL_VERSION}
+cp drbd-utils-${UTIL_VERSION}.tar.gz  ~/rpmbuild/SOURCES
+./configure --enable-spec
+sed -i -e 's/^%endif.\+/%endif/' drbd.spec
+# make .filelist
+# make drbd.spec
+# make rpmprep
+# rpmbuild -bb --without 83support --without 84support --without manual drbd.spec
+rpmbuild -bb --without sbinsymlinks --without heartbeat --without 83support --without 84support drbd.spec
 
 

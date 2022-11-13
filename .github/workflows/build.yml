@@ -1,9 +1,6 @@
 name: CI
 on:
   push:
-    tags: [ '*' ]
-    branches: [ '**' ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -11,29 +8,43 @@ jobs:
     strategy:
       matrix:
        include:
-         - target: drbd9-rpm
-           dockerfile: Dockerfile
-         - target: drbd9-rpm-amzn2
-           dockerfile: Dockerfile.amzn2
-         - target: drbd9-rpm-foros8
-           dockerfile: Dockerfile.foros8
+         # kernel revision of almalinux is fixed at 4.18.0-425.3.1.el8 in all minor version
+         # so, use 8.7
+         - dockerfile: Dockerfile.foros8
+           drbd_tag: latest
+           util_tag: v9.22.0
+           image_tag: 8.7
+         # drbd > 9.1.4 cause error by incompatible blk_cleanup_disk...
+         - dockerfile: Dockerfile.foros8
+           drbd_tag: drbd-9.1.4
+           util_tag: v9.19.1
+           image_tag: 8.7
+         - dockerfile: Dockerfile.foros9
+           drbd_tag: drbd-9.2.0
+           util_tag: v9.22.0
+           image_tag: 9.0
+         - dockerfile: Dockerfile.foros9
+           drbd_tag: drbd-9.1.11
+           util_tag: v9.22.0
+           image_tag: 9.0
     steps:
       - uses: actions/checkout@v2
       - name: Build
         env:
-          TRAVIS_BUILD_DIR: ${{ github.workspace }}
-          TARGET: ${{ matrix.target }}
+          BUILD_DIR: ${{ github.workspace }}
           DOCKERFILE: ${{ matrix.dockerfile }}
+          IMAGE_TAG: ${{ matrix.image_tag }}
+          DRBD_TAG: ${{ matrix.drbd_tag }}
+          UTIL_TAG: ${{ matrix.util_tag }}
         run: |
-          docker build -t procube/$TARGET -f $DOCKERFILE .
-          mkdir -p /tmp/RPMS/{x86_64,noarch}
-          sudo chown 111:111 -R /tmp/RPMS
-          docker run --rm --privileged --name drbd9-rpm -v /tmp/RPMS:/home/builder/rpmbuild/RPMS procube/$TARGET
-          (cd /tmp;tar -czf - RPMS) > $TRAVIS_BUILD_DIR/$TARGET.tar.gz
+          docker build -t builder -f $DOCKERFILE . --build-arg DRBD_TAG=$DRBD_TAG --build-arg UTIL_TAG=$UTIL_TAG --build-arg IMAGE_TAG=$IMAGE_TAG
+          docker run --rm --privileged -v RPMS:/home/builder/rpmbuild/RPMS builder
+          docker run --rm -v RPMS:/home/builder/rpmbuild/RPMS builder tar -cz -C /home/builder/rpmbuild RPMS > $BUILD_DIR/$(docker run --rm builder /bin/bash version.sh).tar.gz
+          docker volume rm RPMS
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{ matrix.target }}.tar.gz
+          name: Latests
+          files: *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
