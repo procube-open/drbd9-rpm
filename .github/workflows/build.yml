@@ -45,6 +45,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Latests
-          files: *.tar.gz
+          files: '*.tar.gz'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
