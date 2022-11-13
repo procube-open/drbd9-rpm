@@ -31,7 +31,7 @@ ARG DRBD_TAG=latest
 ARG UTIL_TAG=latest
 RUN mkdir ${HOME}/Archive \
     && cd ${HOME}/Archive \
-    && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd-9.1.git \
+    && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
     && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
 COPY build.sh .
 COPY version.sh .
