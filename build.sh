@@ -2,7 +2,7 @@
 set -x
 
 # build drbd-9 package
-cd ~/Archive/drbd-9.0
+cd ~/Archive/drbd
 make tarball
 make kmp-rpm
 
