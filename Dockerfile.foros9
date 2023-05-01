@@ -1,4 +1,4 @@
-ARG IMAGE_TAG=9.0-minimal
+ARG IMAGE_TAG=9.1-minimal
 FROM almalinux:${IMAGE_TAG}
 RUN dnf -y update \
     && dnf -y install 'dnf-command(config-manager)'
