@@ -12,6 +12,10 @@ jobs:
          # kernel revision of almalinux is fixed at 4.18.0-425.3.1.el8 in all minor version
          # so, use 8.7
          - dockerfile: Dockerfile.foros8
+           drbd_tag: drbd-9.2.4
+           util_tag: v9.24.0
+           image_tag: 8.8
+         - dockerfile: Dockerfile.foros8
            drbd_tag: drbd-9.2.3
            util_tag: v9.22.0
            image_tag: 8.7
@@ -19,6 +23,10 @@ jobs:
            drbd_tag: drbd-9.1.14
            util_tag: v9.22.0
            image_tag: 8.7
+         - dockerfile: Dockerfile.foros9
+           drbd_tag: drbd-9.2.4
+           util_tag: v9.24.0
+           image_tag: 9.2
          - dockerfile: Dockerfile.foros9
            drbd_tag: drbd-9.2.3
            util_tag: v9.22.0
