@@ -32,8 +32,8 @@ jobs:
            util_tag: v9.22.0
            image_tag: 9.2
          - dockerfile: Dockerfile.foros9
-           drbd_tag: drbd-9.2.4
-           util_tag: v9.24.0
+           drbd_tag: drbd-9.2.10
+           util_tag: v9.28.0
            image_tag: 9.4
     steps:
       - uses: actions/checkout@v2
