@@ -1,7 +1,6 @@
 ARG IMAGE_TAG=8.8
 FROM almalinux:${IMAGE_TAG}
-RUN dnf -y update \
-    && dnf -y install 'dnf-command(config-manager)'
+RUN dnf -y update
 RUN dnf -y install epel-release \
     && dnf config-manager --disable epel epel-modular
 RUN dnf -y groupinstall "Base" "Development Tools" \
