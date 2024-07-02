@@ -1,6 +1,7 @@
 ARG IMAGE_TAG=9.2-minimal
 FROM almalinux:${IMAGE_TAG}
-RUN dnf -y install 'dnf-command(config-manager)'
+RUN dnf -y update \
+    && dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y install epel-release \
     && dnf config-manager --disable epel
 RUN dnf -y groupinstall "Base" "Development Tools" \

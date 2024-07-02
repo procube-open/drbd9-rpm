@@ -1,5 +1,7 @@
 ARG IMAGE_TAG=8.8
 FROM almalinux:${IMAGE_TAG}
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+RUN dnf -y update
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y install epel-release \
     && dnf config-manager --disable epel epel-modular
