@@ -13,8 +13,8 @@ jobs:
          # so, use 8.7
          - dockerfile: Dockerfile.foros8
            drbd_tag: drbd-9.2.11
-           util_tag: v9.29.0
-           image_tag: 8
+           util_tag: v9.28.0
+           image_tag: "8.10"
          - dockerfile: Dockerfile.foros8
            drbd_tag: drbd-9.2.7
            util_tag: v9.27.0
