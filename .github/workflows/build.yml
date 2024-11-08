@@ -18,27 +18,15 @@ jobs:
          - dockerfile: Dockerfile.foros8
            drbd_tag: drbd-9.2.7
            util_tag: v9.27.0
-           image_tag: 8.9
+           image_tag: "8.9"
          - dockerfile: Dockerfile.foros8
            drbd_tag: drbd-9.2.4
            util_tag: v9.24.0
-           image_tag: 8.8
-         - dockerfile: Dockerfile.foros8
-           drbd_tag: drbd-9.1.15
-           util_tag: v9.22.0
-           image_tag: 8.8
-         - dockerfile: Dockerfile.foros9
-           drbd_tag: drbd-9.2.4
-           util_tag: v9.24.0
-           image_tag: 9.2
-         - dockerfile: Dockerfile.foros9
-           drbd_tag: drbd-9.1.15
-           util_tag: v9.22.0
-           image_tag: 9.2
+           image_tag: "8.8"
          - dockerfile: Dockerfile.foros9
            drbd_tag: drbd-9.2.10
            util_tag: v9.28.0
-           image_tag: 9.4
+           image_tag: "9.4"
     steps:
       - uses: actions/checkout@v2
       - name: Build
