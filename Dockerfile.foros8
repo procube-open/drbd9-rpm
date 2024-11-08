@@ -3,7 +3,7 @@ FROM almalinux:${IMAGE_TAG}
 RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
 RUN dnf -y update
 RUN dnf -y install 'dnf-command(config-manager)'
-RUN dnf -y install epel-release \
+RUN dnf -y install epel-release jq\
     && dnf config-manager --disable epel epel-modular
 RUN dnf -y groupinstall "Base" "Development Tools" \
     && dnf -y install --enablerepo powertools rpmdevtools libxslt libxslt-devel pygobject2 help2man po4a selinux-policy-devel
