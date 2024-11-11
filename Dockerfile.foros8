@@ -37,8 +37,9 @@ RUN mkdir ${HOME}/Archive \
 # drbd 9.2.11 のビルドにて
 # bogus date in %changelog: Wed Dec 22 2023 Philipp Reisner <phil@linbit.com> - 9.2.7
 # というエラーが出るので、Wed を Fri に変更
+# 合わせてgitの未コミットチェックを無効化
 RUN sed -i '/\* Wed Dec 22 2023 Philipp Reisner <phil@linbit.com> - 9.2.7/s/Wed/Fri/' ${HOME}/Archive/drbd/drbd-kernel.spec
-
+RUN sed -i '/$(MAKE) check-submods check_all_committed drbd\/.drbd_git_revision/d' ${HOME}/Archive/drbd/Makefile
 COPY build.sh .
 COPY version.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
