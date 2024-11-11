@@ -34,6 +34,11 @@ RUN mkdir ${HOME}/Archive \
     && cd ${HOME}/Archive \
     && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
     && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
+# drbd 9.2.11 のビルドにて
+# bogus date in %changelog: Wed Dec 22 2023 Philipp Reisner <phil@linbit.com> - 9.2.7
+# というエラーが出るので、Wed を Fri に変更
+RUN sed -i '/\* Wed Dec 22 2023 Philipp Reisner <phil@linbit.com> - 9.2.7/s/Wed/Fri/' ${HOME}/Archive/drbd/drbd-kernel.spec
+
 COPY build.sh .
 COPY version.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
