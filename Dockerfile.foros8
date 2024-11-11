@@ -34,7 +34,11 @@ RUN mkdir ${HOME}/Archive \
     && cd ${HOME}/Archive \
     && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
     && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
-RUN sed -i '/\$(cache_dir)\/kernelrelease.txt: $(compat_h) FORCE/s/$(compat_h)/$(cached_compat_h)/' ${HOME}/Archive/drbd/drbd/Makefile.spatch
+RUN if [ -f ${HOME}/Archive/drbd/drbd/Makefile.spatch ]; then \
+        sed -i '/\$(cache_dir)\/kernelrelease.txt: $(compat_h) FORCE/s/$(compat_h)/$(cached_compat_h)/' ${HOME}/Archive/drbd/drbd/Makefile.spatch; \
+    else \
+        echo "Makefile.spatch not found"; \
+    fi
 COPY build.sh .
 COPY version.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
