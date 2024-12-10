@@ -12,6 +12,7 @@ RUN dnf -y install --enablerepo epel kernel-rpm-macros elfutils-libelf-devel ker
 # build spatch from source code
 RUN dnf -y install --enablerepo crb pkgconfig chrpath ocaml ocaml-findlib ocaml-findlib-devel ocaml-ocamldoc
 RUN dnf -y install --enablerepo epel asciidoctor
+RUN dnf -y install keyutils keyutils-libs-devel
 WORKDIR /root
 RUN curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.1.1.tar.gz && tar xvzf 1.1.1.tar.gz
 WORKDIR /root/coccinelle-1.1.1

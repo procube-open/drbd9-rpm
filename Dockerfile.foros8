@@ -1,8 +1,9 @@
 ARG IMAGE_TAG=8.8
 FROM almalinux:${IMAGE_TAG}
-RUN dnf -y update \
-    && dnf -y install 'dnf-command(config-manager)'
-RUN dnf -y install epel-release \
+RUN rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
+RUN dnf -y update
+RUN dnf -y install 'dnf-command(config-manager)'
+RUN dnf -y install epel-release jq\
     && dnf config-manager --disable epel epel-modular
 RUN dnf -y groupinstall "Base" "Development Tools" \
     && dnf -y install --enablerepo powertools rpmdevtools libxslt libxslt-devel pygobject2 help2man po4a selinux-policy-devel
@@ -33,6 +34,13 @@ RUN mkdir ${HOME}/Archive \
     && cd ${HOME}/Archive \
     && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
     && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
+RUN if [ -f ${HOME}/Archive/drbd/drbd/Makefile.spatch ]; then \
+        sed -i '/\$(cache_dir)\/kernelrelease.txt: $(compat_h) FORCE/s/$(compat_h)/$(cached_compat_h)/' ${HOME}/Archive/drbd/drbd/Makefile.spatch; \
+        sed -i '/$(MAKE) check-submods check_all_committed drbd\/.drbd_git_revision/d' ${HOME}/Archive/drbd/Makefile; \
+    else \
+        echo "Makefile.spatch not found"; \
+    fi
+
 COPY build.sh .
 COPY version.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
