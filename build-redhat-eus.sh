@@ -23,8 +23,8 @@ cd ~
 (echo;echo) | opam init
 eval $(opam env --switch=default)
 opam install ocamlfind
-curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.1.1.tar.gz && tar xvzf 1.1.1.tar.gz
-cd coccinelle-1.1.1
+curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.3.0.tar.gz && tar xvzf 1.3.0.tar.gz
+cd coccinelle-1.3.0
 ./autogen
 ./configure
 make 

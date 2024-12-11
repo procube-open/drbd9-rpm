@@ -14,17 +14,17 @@ RUN dnf -y install --enablerepo powertools kernel-rpm-macros elfutils-libelf-dev
 RUN dnf -y install --enablerepo powertools pkgconfig chrpath ocaml ocaml-findlib ocaml-findlib-devel ocaml-ocamldoc
 RUN dnf -y install --enablerepo epel asciidoctor
 WORKDIR /root
-RUN curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.1.1.tar.gz && tar xvzf 1.1.1.tar.gz
-WORKDIR /root/coccinelle-1.1.1
+RUN curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.2.0.tar.gz && tar xvzf 1.2.0.tar.gz
+WORKDIR /root/coccinelle-1.2.0
 RUN ./autogen && ./configure && make && make install
-ENV PYTHONPATH /usr/local/lib/coccinelle/python
+ENV PYTHONPATH=/usr/local/lib/coccinelle/python
 RUN mv /usr/bin/uname /usr/bin/uname.org
 COPY uname /usr/bin/uname
 RUN chmod +x /usr/bin/uname
 RUN install /dev/null /usr/local/bin/lbvers.py
 RUN groupadd -g 111 builder
 RUN useradd -g builder -u 111 builder
-ENV HOME /home/builder
+ENV HOME=/home/builder
 WORKDIR ${HOME}
 USER builder
 RUN rpmdev-setuptree
@@ -34,15 +34,16 @@ RUN mkdir ${HOME}/Archive \
     && cd ${HOME}/Archive \
     && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
     && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
-RUN if [ -f ${HOME}/Archive/drbd/drbd/Makefile.spatch ]; then \
-        sed -i '/\$(cache_dir)\/kernelrelease.txt: $(compat_h) FORCE/s/$(compat_h)/$(cached_compat_h)/' ${HOME}/Archive/drbd/drbd/Makefile.spatch; \
-        sed -i '/$(MAKE) check-submods check_all_committed drbd\/.drbd_git_revision/d' ${HOME}/Archive/drbd/Makefile; \
-    else \
-        echo "Makefile.spatch not found"; \
-    fi
+
+# RUN if [ -f ${HOME}/Archive/drbd/drbd/Makefile.spatch ]; then \
+#         sed -i '/\$(cache_dir)\/kernelrelease.txt: $(compat_h) FORCE/s/$(compat_h)/$(cached_compat_h)/' ${HOME}/Archive/drbd/drbd/Makefile.spatch; \
+#         sed -i '/$(MAKE) check-submods check_all_committed drbd\/.drbd_git_revision/d' ${HOME}/Archive/drbd/Makefile; \
+#     else \
+#         echo "Makefile.spatch not found"; \
+#     fi
 
 COPY build.sh .
 COPY version.sh .
 ADD docbook-xsl-1.79.1.tar.gz .
-ENV STYLESHEET_PREFIX file:///home/builder/docbook-xsl-1.79.1
+ENV STYLESHEET_PREFIX=file:///home/builder/docbook-xsl-1.79.1
 CMD ["/bin/bash","./build.sh"]
