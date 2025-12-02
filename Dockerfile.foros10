@@ -1,0 +1,41 @@
+ARG IMAGE_TAG=10
+FROM almalinux:${IMAGE_TAG}
+RUN dnf -y update \
+    && dnf -y install 'dnf-command(config-manager)'
+RUN dnf -y install epel-release \
+    && dnf config-manager --disable epel
+RUN dnf -y groupinstall "Base" "Development Tools" \
+    && dnf -y install --enablerepo crb rpmdevtools libxslt libxslt-devel help2man po4a selinux-policy-devel
+RUN dnf -y install --enablerepo epel kernel-rpm-macros elfutils-libelf-devel kernel-devel pandoc kernel-abi-stablelists
+# spatch can not find in epel
+# RUN dnf -y install --enablerepo=powertools,epel coccinelle
+# build spatch from source code
+RUN dnf -y install --enablerepo crb pkgconfig chrpath ocaml ocaml-findlib ocaml-findlib-devel ocaml-ocamldoc
+RUN dnf -y install --enablerepo epel asciidoctor
+RUN dnf -y install keyutils keyutils-libs-devel
+WORKDIR /root
+RUN curl -L -O https://github.com/coccinelle/coccinelle/archive/refs/tags/1.3.1.tar.gz && tar xvzf 1.3.1.tar.gz
+WORKDIR /root/coccinelle-1.3.1
+RUN ./autogen && ./configure && make && make install
+ENV PYTHONPATH=/usr/local/lib/coccinelle/python
+RUN mv /usr/bin/uname /usr/bin/uname.org
+COPY uname /usr/bin/uname
+RUN chmod +x /usr/bin/uname
+RUN install /dev/null /usr/local/bin/lbvers.py
+RUN groupadd -g 111 builder
+RUN useradd -g builder -u 111 builder
+ENV HOME=/home/builder
+WORKDIR ${HOME}
+USER builder
+RUN rpmdev-setuptree
+ARG DRBD_TAG=latest
+ARG UTIL_TAG=latest
+RUN mkdir ${HOME}/Archive \
+    && cd ${HOME}/Archive \
+    && git clone --recursive $(if [ $DRBD_TAG != "latest" ]; then echo -b $DRBD_TAG;fi) https://github.com/LINBIT/drbd.git \
+    && git clone --recursive $(if [ $UTIL_TAG != "latest" ]; then echo -b $UTIL_TAG;fi) https://github.com/LINBIT/drbd-utils.git
+COPY build.sh .
+COPY version.sh .
+ADD docbook-xsl-1.79.1.tar.gz .
+ENV STYLESHEET_PREFIX=file:///home/builder/docbook-xsl-1.79.1
+CMD ["/bin/bash","./build.sh"]
