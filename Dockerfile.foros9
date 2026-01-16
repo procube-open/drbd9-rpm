@@ -6,7 +6,17 @@ RUN dnf -y install epel-release \
     && dnf config-manager --disable epel
 RUN dnf -y groupinstall "Base" "Development Tools" \
     && dnf -y install --enablerepo crb rpmdevtools libxslt libxslt-devel help2man po4a selinux-policy-devel
-RUN dnf -y install --enablerepo epel kernel-rpm-macros elfutils-libelf-devel kernel-devel pandoc kernel-abi-stablelists
+# Install specific packages which includes "570.62.1" in packege version.
+RUN dnf -y install \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/kernel-debug-devel-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/kernel-devel-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/kernel-doc-5.14.0-570.62.1.el9_6.noarch.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/kernel-headers-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/perf-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/python3-perf-5.14.0-570.62.1.el9_6.x86_64.rpm \
+        https://vault.almalinux.org/9.6/AppStream/x86_64/os/Packages/rv-5.14.0-570.62.1.el9_6.x86_64.rpm
+RUN dnf -y install --enablerepo epel kernel-rpm-macros elfutils-libelf-devel pandoc kernel-abi-stablelists
 # spatch can not find in epel
 # RUN dnf -y install --enablerepo=powertools,epel coccinelle
 # build spatch from source code
